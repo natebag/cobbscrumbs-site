@@ -49,3 +49,16 @@ export interface FeaturedItem {
   created_at: string;
   updated_at: string;
 }
+
+export interface SiteContent {
+  site_title: string;
+  tagline: string;
+  hero_heading: string;
+  hero_description: string;
+  hero_note: string;
+  about_title: string;
+  about_text: string;
+  about_instagram: string;
+  instagram_handle: string;
+  whatsapp_number: string;
+}

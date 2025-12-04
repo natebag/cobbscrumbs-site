@@ -17,6 +17,7 @@ export default function AdminNav() {
     { href: '/boss/orders', label: 'Orders', icon: '📦' },
     { href: '/boss/products', label: 'Products', icon: '🧁' },
     { href: '/boss/featured', label: 'This Week', icon: '✨' },
+    { href: '/boss/content', label: 'Content', icon: '📝' },
   ];
 
   return (

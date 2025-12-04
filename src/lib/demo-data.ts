@@ -1,4 +1,4 @@
-import { Product, Order, FeaturedItem } from './types';
+import { Product, Order, FeaturedItem, SiteContent } from './types';
 
 export function isDemoMode(): boolean {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -16,7 +16,7 @@ export const DEMO_PRODUCTS: Product[] = [
     stock: 5,
     is_available: true,
     tag: 'Taking orders – limited boxes',
-    tag_emoji: null,
+    tag_emoji: undefined,
     sort_order: 1,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
@@ -85,11 +85,11 @@ export const DEMO_ORDERS: Order[] = [
   {
     id: 'order-2',
     customer_name: 'Mike Chen',
-    customer_email: null,
+    customer_email: undefined,
     customer_phone: '555-5678',
     preferred_contact: 'text',
     order_details: '1x Ghost Brownie Squares for Halloween movie night',
-    allergies: null,
+    allergies: undefined,
     notes: 'Can pick up anytime Friday',
     status: 'confirmed',
     created_at: new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString(), // 3 hours ago
@@ -99,7 +99,7 @@ export const DEMO_ORDERS: Order[] = [
     id: 'order-3',
     customer_name: 'Emily\'s Mom',
     customer_email: 'mom@example.com',
-    customer_phone: null,
+    customer_phone: undefined,
     preferred_contact: 'email',
     order_details: '1x Earth Day Cupcakes for classroom party',
     allergies: 'No dairy',
@@ -142,3 +142,16 @@ export const DEMO_FEATURED: FeaturedItem[] = [
     updated_at: new Date().toISOString(),
   },
 ];
+
+export const DEMO_SITE_CONTENT: SiteContent = {
+  site_title: "Cobb's Crumbs",
+  tagline: 'cozy bakes • tiny batches • big love',
+  hero_heading: 'Homemade treats for birthdays, movie nights & "just because."',
+  hero_description: 'Emily bakes small-batch goodies from her kitchen – from sprinkle truffle boxes to themed cupcakes and seasonal desserts. Browse the shop and place your order!',
+  hero_note: 'P.S. Allergies or special requests? Let Emily know when you order!',
+  about_title: 'Meet Emily',
+  about_text: 'Cobb\'s Crumbs started as "I\'ll bring dessert" and turned into "wait, can I order some too?". Emily bakes in tiny batches, experiments with flavours, and loves turning birthdays and random Tuesdays into something a little sweeter.',
+  about_instagram: 'Follow @cobbscrumbs on Instagram to see new treats, kitchen experiments, and last-minute "I have extra!" boxes.',
+  instagram_handle: '@cobbscrumbs',
+  whatsapp_number: '12269244889',
+};

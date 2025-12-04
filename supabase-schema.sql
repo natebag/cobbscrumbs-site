@@ -55,6 +55,15 @@ CREATE TABLE featured_items (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Site content (editable text blocks for homepage)
+CREATE TABLE site_content (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  content_key TEXT UNIQUE NOT NULL,
+  content_value TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 -- Admin settings (for simple password auth)
 CREATE TABLE admin_settings (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -94,11 +103,17 @@ CREATE TRIGGER update_featured_items_updated_at
   FOR EACH ROW
   EXECUTE FUNCTION update_updated_at_column();
 
+CREATE TRIGGER update_site_content_updated_at
+  BEFORE UPDATE ON site_content
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+
 -- Enable Row Level Security
 ALTER TABLE products ENABLE ROW LEVEL SECURITY;
 ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE order_items ENABLE ROW LEVEL SECURITY;
 ALTER TABLE featured_items ENABLE ROW LEVEL SECURITY;
+ALTER TABLE site_content ENABLE ROW LEVEL SECURITY;
 ALTER TABLE admin_settings ENABLE ROW LEVEL SECURITY;
 
 -- Policies for products (public read, admin write)
@@ -141,6 +156,15 @@ CREATE POLICY "Featured items are editable by service role only"
   ON featured_items FOR ALL
   USING (auth.role() = 'service_role');
 
+-- Policies for site_content (public read, admin write)
+CREATE POLICY "Site content is viewable by everyone"
+  ON site_content FOR SELECT
+  USING (true);
+
+CREATE POLICY "Site content is editable by service role only"
+  ON site_content FOR ALL
+  USING (auth.role() = 'service_role');
+
 -- Policies for admin_settings
 CREATE POLICY "Admin settings are accessible by service role only"
   ON admin_settings FOR ALL
@@ -179,3 +203,16 @@ INSERT INTO featured_items (emoji, title, description, sort_order, is_visible) V
 ('🎂', 'Birthday sprinkle boxes', 'Perfect for parties or just because', 1, true),
 ('🌎', 'Earth Day cupcakes', 'Blue & green frosted goodness', 2, true),
 ('👻', 'Gooey ghost brownies', 'Spooky cute for movie nights', 3, true);
+
+-- Default site content
+INSERT INTO site_content (content_key, content_value) VALUES
+('site_title', 'Cobb''s Crumbs'),
+('tagline', 'cozy bakes • tiny batches • big love'),
+('hero_heading', 'Homemade treats for birthdays, movie nights & "just because."'),
+('hero_description', 'Emily bakes small-batch goodies from her kitchen – from sprinkle truffle boxes to themed cupcakes and seasonal desserts. Browse the shop and place your order!'),
+('hero_note', 'P.S. Allergies or special requests? Let Emily know when you order!'),
+('about_title', 'Meet Emily'),
+('about_text', 'Cobb''s Crumbs started as "I''ll bring dessert" and turned into "wait, can I order some too?". Emily bakes in tiny batches, experiments with flavours, and loves turning birthdays and random Tuesdays into something a little sweeter.'),
+('about_instagram', 'Follow @cobbscrumbs on Instagram to see new treats, kitchen experiments, and last-minute "I have extra!" boxes.'),
+('instagram_handle', '@cobbscrumbs'),
+('whatsapp_number', '12269244889');
