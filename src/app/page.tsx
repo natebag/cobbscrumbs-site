@@ -1,65 +1,117 @@
-import Image from "next/image";
+import Link from 'next/link';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import ThisWeekSection from '@/components/ThisWeekSection';
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <main className="max-w-4xl mx-auto px-4 py-6">
+      <Header />
+
+      {/* Hero Section */}
+      <section className="card p-6 md:p-8 mb-8 relative overflow-hidden">
+        {/* Decorative circles */}
+        <div className="absolute -top-16 -right-10 w-32 h-32 rounded-full bg-orange-200/30" />
+        <div className="absolute -bottom-20 -left-16 w-36 h-36 rounded-full bg-pink-200/30" />
+
+        <div className="relative z-10">
+          <h1
+            className="text-4xl md:text-5xl text-[var(--accent)] mb-2"
+            style={{ fontFamily: 'var(--font-pacifico), cursive' }}
+          >
+            Cobb&apos;s Crumbs
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
+          <p className="text-[var(--text-soft)] mb-4">
+            cozy bakes &bull; tiny batches &bull; big love
+          </p>
+
+          <h2 className="text-xl md:text-2xl font-bold text-[var(--text-main)] mb-4">
+            Homemade treats for birthdays, movie nights &amp; &quot;just because.&quot;
+          </h2>
+
+          <p className="text-[var(--text-soft)] mb-6 max-w-xl">
+            Emily bakes small-batch goodies from her kitchen &ndash; from sprinkle truffle boxes
+            to themed cupcakes and seasonal desserts. Browse the shop and place your order!
+          </p>
+
+          <div className="flex flex-wrap gap-3 mb-4">
+            <Link href="/shop" className="btn-main">
+              🧁 Browse the Shop
+            </Link>
             <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              href="https://instagram.com/cobbscrumbs"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-outline"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+              📸 See more on Instagram
+            </a>
+          </div>
+
+          <p className="text-sm text-[var(--text-soft)]">
+            P.S. Allergies or special requests? Let Emily know when you order!
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
+      </section>
+
+      {/* This Week Section - fetched from database */}
+      <ThisWeekSection />
+
+      {/* About Section */}
+      <section className="mb-8">
+        <h2
+          className="text-2xl text-[var(--accent)] mb-2"
+          style={{ fontFamily: 'var(--font-pacifico), cursive' }}
+        >
+          Meet Emily
+        </h2>
+        <div className="card p-5 border-dashed">
+          <p className="text-[var(--text-soft)]">
+            Cobb&apos;s Crumbs started as &quot;I&apos;ll bring dessert&quot; and turned into
+            &quot;wait, can I order some too?&quot;. Emily bakes in tiny batches, experiments
+            with flavours, and loves turning birthdays and random Tuesdays into something
+            a little sweeter.
+          </p>
+          <p className="text-[var(--text-soft)] mt-3">
+            Follow <strong className="text-[var(--accent)]">@cobbscrumbs</strong> on Instagram
+            to see new treats, kitchen experiments, and last-minute &quot;I have extra!&quot; boxes.
+          </p>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section className="mb-8">
+        <h2
+          className="text-2xl text-[var(--accent)] mb-2"
+          style={{ fontFamily: 'var(--font-pacifico), cursive' }}
+        >
+          Get in Touch
+        </h2>
+        <p className="text-[var(--text-soft)] mb-4">
+          Want to order or have questions? Reach out!
+        </p>
+
+        <div className="flex flex-wrap gap-3">
           <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+            href="https://wa.me/12269244889"
             target="_blank"
             rel="noopener noreferrer"
+            className="btn-main"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
+            💬 Message on WhatsApp
           </a>
           <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+            href="https://instagram.com/cobbscrumbs"
             target="_blank"
             rel="noopener noreferrer"
+            className="btn-outline"
           >
-            Documentation
+            📸 DM on Instagram
           </a>
         </div>
-      </main>
-    </div>
+      </section>
+
+      <Footer />
+    </main>
   );
 }
