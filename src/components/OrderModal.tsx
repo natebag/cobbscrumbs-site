@@ -9,19 +9,21 @@ interface OrderModalProps {
 }
 
 const WHATSAPP_NUMBER = '12269244889';
+const INSTAGRAM_HANDLE = 'cobbscrumbs';
 
 export default function OrderModal({ product, onClose }: OrderModalProps) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
-    preferredContact: 'whatsapp',
+    preferredContact: 'text',
     quantity: 1,
     allergies: '',
     notes: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [orderMessage, setOrderMessage] = useState('');
 
   if (!product) return null;
 
@@ -31,9 +33,22 @@ export default function OrderModal({ product, onClose }: OrderModalProps) {
 
     const orderDetails = `${formData.quantity}x ${product.name}`;
 
+    // Build the message for optional sharing
+    const message =
+      `Hi Emily! I'd like to order:\n\n` +
+      `${formData.quantity}x ${product.name} (${product.price_label || '$' + product.price})\n\n` +
+      `Name: ${formData.name}\n` +
+      (formData.phone ? `Phone: ${formData.phone}\n` : '') +
+      (formData.email ? `Email: ${formData.email}\n` : '') +
+      (formData.allergies ? `Allergies/Dietary: ${formData.allergies}\n` : '') +
+      (formData.notes ? `Notes: ${formData.notes}\n` : '') +
+      `\nPreferred contact: ${formData.preferredContact}`;
+
+    setOrderMessage(message);
+
     // Save to database
     try {
-      await fetch('/api/orders', {
+      const response = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -46,28 +61,36 @@ export default function OrderModal({ product, onClose }: OrderModalProps) {
           notes: formData.notes,
         }),
       });
+
+      if (!response.ok) {
+        throw new Error('Failed to save order');
+      }
+
+      setSubmitted(true);
     } catch (error) {
       console.error('Failed to save order:', error);
+      alert('Something went wrong. Please try again or contact Emily directly.');
+    } finally {
+      setIsSubmitting(false);
     }
+  };
 
-    // Create WhatsApp message
-    const message = encodeURIComponent(
-      `Hi Emily! I'd like to order:\n\n` +
-        `${formData.quantity}x ${product.name} (${product.price_label || '$' + product.price})\n\n` +
-        `Name: ${formData.name}\n` +
-        (formData.phone ? `Phone: ${formData.phone}\n` : '') +
-        (formData.allergies ? `Allergies/Dietary: ${formData.allergies}\n` : '') +
-        (formData.notes ? `Notes: ${formData.notes}\n` : '') +
-        `\nPreferred contact: ${formData.preferredContact}`
+  const openWhatsApp = () => {
+    window.open(
+      `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(orderMessage)}`,
+      '_blank'
     );
+  };
 
-    setIsSubmitting(false);
-    setSubmitted(true);
+  const openInstagram = () => {
+    window.open(`https://instagram.com/${INSTAGRAM_HANDLE}`, '_blank');
+  };
 
-    // Open WhatsApp after a brief delay
-    setTimeout(() => {
-      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank');
-    }, 500);
+  const openEmail = () => {
+    window.open(
+      `mailto:?subject=Cobb's Crumbs Order&body=${encodeURIComponent(orderMessage)}`,
+      '_blank'
+    );
   };
 
   if (submitted) {
@@ -76,14 +99,41 @@ export default function OrderModal({ product, onClose }: OrderModalProps) {
         <div className="card p-6 max-w-md w-full text-center">
           <div className="text-5xl mb-4">🎉</div>
           <h3 className="text-xl font-bold text-[var(--text-main)] mb-2">
-            Order Request Sent!
+            Order Submitted!
           </h3>
-          <p className="text-[var(--text-soft)] mb-4">
-            WhatsApp should be opening now. If it didn&apos;t, you can message Emily directly
-            at her WhatsApp number.
+          <p className="text-[var(--text-soft)] mb-6">
+            Emily has received your order request and will get back to you soon via{' '}
+            <strong>{formData.preferredContact}</strong>.
           </p>
-          <button onClick={onClose} className="btn-main">
-            Close
+
+          <div className="space-y-3 mb-6">
+            <p className="text-sm font-semibold text-[var(--text-soft)]">
+              Want to reach out directly?
+            </p>
+            <div className="flex flex-wrap gap-2 justify-center">
+              <button
+                onClick={openWhatsApp}
+                className="px-4 py-2 rounded-full text-sm font-semibold bg-green-500 text-white hover:bg-green-600 transition-colors"
+              >
+                💬 WhatsApp
+              </button>
+              <button
+                onClick={openInstagram}
+                className="px-4 py-2 rounded-full text-sm font-semibold bg-pink-500 text-white hover:bg-pink-600 transition-colors"
+              >
+                📸 Instagram
+              </button>
+              <button
+                onClick={openEmail}
+                className="px-4 py-2 rounded-full text-sm font-semibold bg-blue-500 text-white hover:bg-blue-600 transition-colors"
+              >
+                ✉️ Email
+              </button>
+            </div>
+          </div>
+
+          <button onClick={onClose} className="btn-main w-full">
+            Done
           </button>
         </div>
       </div>
@@ -138,7 +188,7 @@ export default function OrderModal({ product, onClose }: OrderModalProps) {
             </div>
             <div>
               <label className="block text-sm font-semibold text-[var(--text-soft)] mb-1">
-                Phone / WhatsApp
+                Phone (optional)
               </label>
               <input
                 type="tel"
@@ -157,7 +207,7 @@ export default function OrderModal({ product, onClose }: OrderModalProps) {
               <input
                 type="number"
                 min="1"
-                max={product.stock}
+                max={product.stock || 99}
                 value={formData.quantity}
                 onChange={(e) =>
                   setFormData({ ...formData, quantity: parseInt(e.target.value) || 1 })
@@ -174,9 +224,9 @@ export default function OrderModal({ product, onClose }: OrderModalProps) {
                   setFormData({ ...formData, preferredContact: e.target.value })
                 }
               >
+                <option value="text">Text Message</option>
                 <option value="whatsapp">WhatsApp</option>
                 <option value="instagram">Instagram DM</option>
-                <option value="text">Text Message</option>
                 <option value="email">Email</option>
               </select>
             </div>
@@ -214,12 +264,12 @@ export default function OrderModal({ product, onClose }: OrderModalProps) {
               disabled={isSubmitting}
               className="btn-main flex-1 justify-center"
             >
-              {isSubmitting ? 'Sending...' : 'Send via WhatsApp'}
+              {isSubmitting ? 'Submitting...' : 'Submit Order'}
             </button>
           </div>
 
           <p className="text-xs text-center text-[var(--text-soft)]">
-            This will save your request and open WhatsApp so you can chat with Emily directly.
+            Your order will be saved and Emily will contact you via your preferred method.
           </p>
         </form>
       </div>
