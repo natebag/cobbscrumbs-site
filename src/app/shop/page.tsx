@@ -4,13 +4,12 @@ import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
-import OrderModal from '@/components/OrderModal';
+import CartDrawer from '@/components/CartDrawer';
 import { Product } from '@/lib/types';
 
 export default function ShopPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   useEffect(() => {
     fetchProducts();
@@ -48,7 +47,7 @@ export default function ShopPage() {
           The Shop
         </h1>
         <p className="text-[var(--text-soft)]">
-          Browse Emily&apos;s current treats. Click &quot;Order&quot; to send a request via WhatsApp!
+          Browse Emily&apos;s current treats. Add items to your cart and checkout when ready!
         </p>
       </section>
 
@@ -78,11 +77,7 @@ export default function ShopPage() {
       ) : (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {products.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              onOrder={setSelectedProduct}
-            />
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
       )}
@@ -104,7 +99,7 @@ export default function ShopPage() {
 
       <Footer />
 
-      <OrderModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />
+      <CartDrawer />
     </main>
   );
 }

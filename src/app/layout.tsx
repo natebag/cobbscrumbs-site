@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Nunito, Pacifico } from "next/font/google";
 import "./globals.css";
+import { CartProvider } from "@/lib/cart-context";
 
 const nunito = Nunito({
   variable: "--font-nunito",
@@ -27,7 +28,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${nunito.variable} ${pacifico.variable} antialiased`}>
-        {children}
+        <CartProvider>
+          {children}
+        </CartProvider>
       </body>
     </html>
   );

@@ -2,9 +2,11 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useCart } from '@/lib/cart-context';
 
 export default function Header() {
   const pathname = usePathname();
+  const { totalItems, setIsCartOpen } = useCart();
 
   return (
     <header className="mb-6">
@@ -44,10 +46,21 @@ export default function Header() {
             href="https://instagram.com/cobbscrumbs"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-4 py-2 rounded-full font-semibold text-[var(--text-soft)] hover:bg-[var(--accent-soft)] transition-all"
+            className="px-4 py-2 rounded-full font-semibold text-[var(--text-soft)] hover:bg-[var(--accent-soft)] transition-all hidden sm:block"
           >
             Instagram
           </a>
+          <button
+            onClick={() => setIsCartOpen(true)}
+            className="relative px-4 py-2 rounded-full font-semibold text-[var(--text-soft)] hover:bg-[var(--accent-soft)] transition-all"
+          >
+            🛒
+            {totalItems > 0 && (
+              <span className="absolute -top-1 -right-1 bg-[var(--accent)] text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
+                {totalItems}
+              </span>
+            )}
+          </button>
         </div>
       </nav>
     </header>

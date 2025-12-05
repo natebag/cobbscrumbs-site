@@ -4,6 +4,7 @@ import HeroSection from '@/components/HeroSection';
 import ThisWeekSection from '@/components/ThisWeekSection';
 import AboutSection from '@/components/AboutSection';
 import ContactSection from '@/components/ContactSection';
+import CartDrawer from '@/components/CartDrawer';
 
 export default function HomePage() {
   return (
@@ -23,6 +24,8 @@ export default function HomePage() {
       <ContactSection />
 
       <Footer />
+
+      <CartDrawer />
     </main>
   );
 }

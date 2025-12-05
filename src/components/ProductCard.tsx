@@ -2,14 +2,23 @@
 
 import Image from 'next/image';
 import { Product } from '@/lib/types';
+import { useCart } from '@/lib/cart-context';
 
 interface ProductCardProps {
   product: Product;
-  onOrder?: (product: Product) => void;
 }
 
-export default function ProductCard({ product, onOrder }: ProductCardProps) {
+export default function ProductCard({ product }: ProductCardProps) {
+  const { addItem, items } = useCart();
   const isSoldOut = product.stock <= 0 || !product.is_available;
+
+  // Check if item is already in cart
+  const cartItem = items.find((item) => item.product.id === product.id);
+  const inCart = !!cartItem;
+
+  const handleAddToCart = () => {
+    addItem(product, 1);
+  };
 
   return (
     <article
@@ -65,10 +74,14 @@ export default function ProductCard({ product, onOrder }: ProductCardProps) {
             {product.stock} available
           </span>
           <button
-            onClick={() => onOrder?.(product)}
-            className="btn-main text-sm py-2 px-4"
+            onClick={handleAddToCart}
+            className={`text-sm py-2 px-4 rounded-full font-semibold transition-all ${
+              inCart
+                ? 'bg-green-500 text-white hover:bg-green-600'
+                : 'btn-main'
+            }`}
           >
-            Order
+            {inCart ? `✓ In Cart (${cartItem.quantity})` : 'Add to Cart'}
           </button>
         </div>
       )}
